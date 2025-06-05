@@ -28,7 +28,7 @@ class Notion_client():
     
     def fetch_page(self, page_id: str):
         """ Get all text blocks from page """
-        blocks = self.client.blocks.clilfren.list(block_id=page_id)
+        blocks = self.client.blocks.clilfren.list(block_id=page_id)["results"]
         paragraphs = []
         for block in blocks:
             if block["type"] == "paragraph":
@@ -42,24 +42,30 @@ class Notion_client():
     def export_page(self, id: str, overwright : bool = False):
         page_id = re.sub(r'[()]', '', id)
 
-        if not overwright and page_id in self.exported_pages:
-            print("Page is already exist")
-            return False
+        try: 
+            page_meta_data = self.client.pages.retrieve(page_id=page_id)
+            last_edited_time = page_meta_data["last_edited_time"]
+
+            filename = f"page{page_id[:10]}.md"
+            filepath = self.output_dir / filename
+
+            if page_id in self.exported_pages and not overwright and self.exported_pages[page_id].get("last_edited_time") == last_edited_time:
+                print("Page was not updated")
+                return
         
-        try:
             paragraphs = self.fetch_page(page_id)
             if not paragraphs:
                 print(f"No valid content on {page_id} page")
                 return False
-            
-            filename = f"page{page_id[:10]}.md"
-            filepath = self.output_dir / filename
         
             with open(filepath, "w", encoding="utf-8") as file:
                 for paragraph in paragraphs:
                     file.write(paragraph + "\n")
             
-            self.exported_pages[page_id] = filename
+            self.exported_pages[page_id] = {
+                "filename": filename,
+                "last_edited_time": last_edited_time,
+            }
             self._save_exported()
             
             print(f"Exported to {filepath} in {filename}")
