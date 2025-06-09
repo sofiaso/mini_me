@@ -8,15 +8,15 @@ from langchain.schema import Document
 
 from langchain.document_loaders import TextLoader
 
-from rag.utils import Cashe_indexed
+from rag.utils import CasheIndexed
 
 DATA_PATH = "data"
 INDEX_PATH = "faiss_index"
 MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
-class Index_builder():
+class IndexBuilder():
     def __init__(self, text):
-        self.hash_cashe = Cashe_indexed()
+        self.hash_cashe = CasheIndexed()
 
     def _clean_markdown(self, text: str):
         text = re.sub(r"!\[.*?\]\(.*?\)", "", text)

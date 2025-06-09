@@ -4,7 +4,7 @@ from pathlib import Path
 
 CASHE_PATH = "indexed_hashes.json"
 
-class Cashe_indexed():
+class CasheIndexed():
     def __init__(self):
         self.hashes = self._load_hash_cashe()
 
