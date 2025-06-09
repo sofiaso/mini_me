@@ -39,7 +39,7 @@ class QueryEngine():
         context = "\n\n".join(context_parts)
         return context[:self.max_context_tokens]
     
-    def build_prompt(self, query, context):
+    def build_prompt(self, query, context, prompt=""):
         if not context:
             return(
                 f"User asked question: \n{query}\n\n"
@@ -49,7 +49,7 @@ class QueryEngine():
         return f"""
         You are an attentive assistant who answers user questions in English based on context from documents. 
         This information from the documents is a small copy of the user and his life. Answer as if you are
-        reading information from the brain of that person, who is asking.
+        reading information from the brain of that person, who is asking. Additional info: {prompt}
 
         Context:
         ---

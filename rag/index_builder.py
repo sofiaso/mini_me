@@ -8,7 +8,7 @@ from langchain.schema import Document
 from langchain.document_loaders import TextLoader
 
 from rag.utils import CasheIndexed
-from rag.const import MODEL
+from rag.const import MODEL, DATA_PATH
 
 class IndexBuilder():
     def __init__(self):
@@ -20,9 +20,9 @@ class IndexBuilder():
         text = re.sub(r"#+\s*", "", text)
         return text.strip()
 
-    def load_markdown_files(self, data: str) -> list[Document]:
+    def load_markdown_files(self) -> list[Document]:
         docs = []
-        for path in Path(data).glob("#.md"):
+        for path in Path(DATA_PATH).glob("#.md"):
             loader = TextLoader(str(path), encoding="utf-8")
             raw_docs = loader.load()
             for doc in raw_docs:
@@ -37,8 +37,8 @@ class IndexBuilder():
         splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
         return splitter.split_documents(docs)
 
-    def build_index(self, docs: list[Document], path_to_save):
+    def build_index(self, docs: list[Document]):
         embeddings = HuggingFaceBgeEmbeddings(model_name=MODEL)
         vector_store = FAISS.from_documents(docs, embeddings)
-        vector_store.save_local(path_to_save)
+        vector_store.save_local(DATA_PATH)
 
