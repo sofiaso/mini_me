@@ -6,14 +6,16 @@ import re
 from notion_client import Client
 from dotenv import load_dotenv
 
-class Notion_client():
-    def __init__(self, output_dir: str = "data", log_file: str = "data/exported_pages.json"):
+from rag.const import DATA_PATH, LOG_FILE
+
+class NotionClient():
+    def __init__(self):
         load_dotenv()
         self.client = Client(auth=os.getenv("NOTION_TOKEN"))
-        self.output_dir = Path(output_dir)
+        self.output_dir = Path(DATA_PATH)
         self.output_dir.mkdir(parents=True, exists_ok=True)
 
-        self.__log_file = Path()
+        self.__log_file = Path(LOG_FILE)
         self.exported_pages = self._load_exported_pages()
     
     def _load_exported_pages(self):

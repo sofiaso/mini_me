@@ -1,4 +1,3 @@
-import os 
 import re 
 from pathlib import Path
 from langchain.embeddings import HuggingFaceBgeEmbeddings
@@ -9,13 +8,10 @@ from langchain.schema import Document
 from langchain.document_loaders import TextLoader
 
 from rag.utils import CasheIndexed
-
-DATA_PATH = "data"
-INDEX_PATH = "faiss_index"
-MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+from rag.const import MODEL
 
 class IndexBuilder():
-    def __init__(self, text):
+    def __init__(self):
         self.hash_cashe = CasheIndexed()
 
     def _clean_markdown(self, text: str):
@@ -30,7 +26,7 @@ class IndexBuilder():
             loader = TextLoader(str(path), encoding="utf-8")
             raw_docs = loader.load()
             for doc in raw_docs:
-                text = self.clean_markdown(doc.page_content)
+                text = self._clean_markdown(doc.page_content)
                 content_hash = self.hash_cashe.compute_hash(text)
                 if self.hash_cashe.is_new(content_hash):
                     self.hash_cashe.add(content_hash)

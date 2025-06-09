@@ -3,12 +3,11 @@ from langchain.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceBgeEmbeddings
 import torch
 
-MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-MODEL_ID = "TiniLlama/TinyLlama-1.1B-Chat-v1.0"
+from rag.const import MODEL, MODEL_ID, INDEX_PATH
 
 class QueryEngine():
-    def __init__(self, index_path, device=-1, similarity_threshold=0.6, k=5, max_context_tokens=1000):
-        self.index_path = index_path
+    def __init__(self, similarity_threshold=0.6, k=5, max_context_tokens=1000):
+        self.index_path = INDEX_PATH
         self.similarity_threshold = similarity_threshold
         self.k = k
         self.max_context_tokens = max_context_tokens
