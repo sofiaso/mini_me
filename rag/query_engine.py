@@ -21,7 +21,7 @@ class QueryEngine():
             "text-generation", 
             model=self.model, 
             tokenizer=self.tokenizer, 
-            device=torch.device("cuda" if torch.cuda_is_available() else "cpu"))
+            device=torch.device("cuda" if torch.cuda.is_available() else "cpu"))
     
     def build_context(self, query):
         results = self.db.similarity_search_with_score(query, k=self.k)
@@ -31,10 +31,10 @@ class QueryEngine():
             if score < self.similarity_threshold:
                 continue
             source = doc.metadata.get("source", "unknown source")
-            context_parts.append(f"[{source}]\n{doc.page_context.strip()}")
+            context_parts.append(f"[{source}]\n{doc.page_content.strip()}")
         
         if not context_parts:
-            return
+            return ""
         
         context = "\n\n".join(context_parts)
         return context[:self.max_context_tokens]
@@ -70,7 +70,7 @@ class QueryEngine():
 
         return output.split("Respond: ")[-1].strip()
 
-if __name__ == "main":
+if __name__ == "__main__":
     engine = QueryEngine()
     user_input = ""
     while True:

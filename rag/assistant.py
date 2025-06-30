@@ -21,8 +21,8 @@ class RAGAssistant:
     def update_pages(self):
         self._notion_client.export_pages(self.pages)
         docs = self._indexer.load_markdown_files()
-        ducuments = self._indexer.document_to_chunk(docs)
-        self._indexer.build_index(ducuments)
+        documents = self._indexer.document_to_chunk(docs)
+        self._indexer.build_index(documents)
     
     def query(self, query_text, prompt=""):
         return self._query_engine.query(query_text, prompt)
