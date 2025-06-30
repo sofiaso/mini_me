@@ -30,18 +30,18 @@ class NotionClient():
     
     def fetch_page(self, page_id: str):
         """ Get all text blocks from page """
-        blocks = self.client.blocks.clilfren.list(block_id=page_id)["results"]
+        blocks = self.client.blocks.clildren.list(block_id=page_id)["results"]
         paragraphs = []
         for block in blocks:
             if block["type"] == "paragraph":
                 texts = block["paragraph"]["text"]
                 content = "".join(t["plain_text"] for t in texts)
-                if content.strips():
+                if content.strip():
                     paragraphs.append(content.strip())
         
         return paragraphs
     
-    def export_page(self, id: str, overwright : bool = False):
+    def export_page(self, id: str, overwrite : bool = False):
         page_id = re.sub(r'[()]', '', id)
 
         try: 
@@ -51,7 +51,7 @@ class NotionClient():
             filename = f"page{page_id[:10]}.md"
             filepath = self.output_dir / filename
 
-            if page_id in self.exported_pages and not overwright and self.exported_pages[page_id].get("last_edited_time") == last_edited_time:
+            if page_id in self.exported_pages and not overwrite and self.exported_pages[page_id].get("last_edited_time") == last_edited_time:
                 print("Page was not updated")
                 return
         

@@ -7,12 +7,12 @@ from langchain.schema import Document
 
 from langchain.document_loaders import TextLoader
 
-from rag.utils import CasheIndexed
+from rag.utils import CacheIndexed
 from rag.const import MODEL, DATA_PATH
 
 class IndexBuilder():
     def __init__(self):
-        self.hash_cashe = CasheIndexed()
+        self.hash_cashe = CacheIndexed()
 
     def _clean_markdown(self, text: str):
         text = re.sub(r"!\[.*?\]\(.*?\)", "", text)
@@ -22,7 +22,7 @@ class IndexBuilder():
 
     def load_markdown_files(self) -> list[Document]:
         docs = []
-        for path in Path(DATA_PATH).glob("#.md"):
+        for path in Path(DATA_PATH).glob("*.md"):
             loader = TextLoader(str(path), encoding="utf-8")
             raw_docs = loader.load()
             for doc in raw_docs:

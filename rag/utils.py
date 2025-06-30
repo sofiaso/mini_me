@@ -2,11 +2,11 @@ import hashlib
 import json
 from pathlib import Path
 
-CASHE_PATH = "indexed_hashes.json"
+CACHE_PATH = "indexed_hashes.json"
 
-class CasheIndexed():
+class CacheIndexed():
     def __init__(self):
-        self.hashes = self._load_hash_cashe()
+        self.hashes: set[str] = self._load_hash_cache()
 
     def compute_hash(self, text):
         return hashlib.sha256(text.encode("utf-8")).hexdigest()
@@ -16,13 +16,14 @@ class CasheIndexed():
 
     def add(self, hash):
         self.hashes.add(hash)
+        self.save(self.hashes)
     
-    def _load_hash_cashe(self):
-        if not Path(CASHE_PATH).exists():
+    def _load_hash_cache(self):
+        if not Path(CACHE_PATH).exists():
             return set()
-        with open(CASHE_PATH, "r") as file:
+        with open(CACHE_PATH, "r") as file:
             return set(json.load(file))
     
     def save(self, hashes: set):
-        with open(CASHE_PATH, "w") as file:
+        with open(CACHE_PATH, "w") as file:
             json.dump(list(hashes), file, indent=2)
